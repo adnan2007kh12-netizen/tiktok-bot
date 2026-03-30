@@ -4,12 +4,12 @@ from telegram import Update
 from telegram.ext import ApplicationBuilder, MessageHandler, filters, ContextTypes
 
 TOKEN = os.getenv("BOT_TOKEN")
-CHANNEL_USERNAME = "@media_bots5"
+CHANNEL_ID = -1003734774744
 
-async def check_join(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def check_join(update: Update, context):
     user_id = update.effective_user.id
     try:
-        member = await context.bot.get_chat_member(CHANNEL_USERNAME, user_id)
+        member = await context.bot.get_chat_member(-1003734774744, user_id)
         return member.status in ["member", "administrator", "creator"]
     except:
         return False
