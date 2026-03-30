@@ -1,14 +1,30 @@
 import requests
+import os
 from telegram import Update
 from telegram.ext import ApplicationBuilder, MessageHandler, filters, ContextTypes
 
-import os
 TOKEN = os.getenv("BOT_TOKEN")
+CHANNEL_USERNAME = "@media_bots5"
+
+async def check_join(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user_id = update.effective_user.id
+    try:
+        member = await context.bot.get_chat_member(CHANNEL_USERNAME, user_id)
+        return member.status in ["member", "administrator", "creator"]
+    except:
+        return False
 
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     url = update.message.text
-async def handle_message(update: Update, context):
-    url = update.message.text
+
+    joined = await check_join(update, context)
+    if not joined:
+        await update.message.reply_text(
+            "🚫 لازم تشترك بالقناة أولاً 👇\n"
+            "https://t.me/media_bots5\n\n"
+            "بعد الاشتراك ابعت الرابط مرة ثانية ✅"
+        )
+        return
 
     if "tiktok.com" in url:
         await update.message.reply_text("⏳ جاري التحميل...")
@@ -26,13 +42,9 @@ async def handle_message(update: Update, context):
         except Exception as e:
             print(e)
             await update.message.reply_text("❌ صار خطأ أثناء التحميل")
-
     else:
-        await update.message.reply_text("📩 أرسل رابط TikTok فقط")
-
+        await update.message.reply_text("📩 ابعت رابط TikTok فقط")
 
 app = ApplicationBuilder().token(TOKEN).build()
-from telegram.ext import MessageHandler, filters
 app.add_handler(MessageHandler(filters.TEXT, handle_message))
 app.run_polling()
-
