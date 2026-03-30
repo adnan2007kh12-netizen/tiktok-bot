@@ -2,7 +2,8 @@ import requests
 from telegram import Update
 from telegram.ext import ApplicationBuilder, MessageHandler, filters, ContextTypes
 
-TOKEN = "8258990351:AAGHcuQ8TQcACw51V1Ve6hANotJCn5KhFbA"
+import os
+TOKEN = os.getenv("BOT_TOKEN")
 
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     url = update.message.text
